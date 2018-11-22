@@ -1,0 +1,119 @@
+
+.account-confirm {
+    width:100%;
+}
+.account-transfer-head {
+    width:100%;
+    overflow: hidden;
+}
+.transfer-head-left,.transfer-head-right {
+    width: 46%;
+    float: left;
+    border: 1px solid #979797;
+}
+.transfer-head-lefttips,.transfer-head-righttips {
+    margin: 0 10px;
+    border-bottom: 1px solid #979797;
+    text-align: center;
+    font-size: 14px;
+    line-height: 25px;
+}
+.transfer-head-rightaddress,.transfer-head-leftaddress {
+    margin: 0 10px;
+    font-size: 13px;
+    padding:5px 0;
+    height:48px;
+}
+.transfer-head-icon{
+    float: left;
+    font-size: 25px;
+    padding-top: 15px;
+    width: 8%;
+    text-align: center;
+    color:#979797;
+}
+
+.account-transfer-cont {
+    width:100%;
+}
+
+.transfer-cont-item {
+    width:100%;
+    line-height: 30px;
+    font-size: 14px;
+    overflow: hidden;
+}
+.transfer-cont-left {
+    float: left;
+    font-weight: 600;
+}
+.transfer-cont-right {
+    float: right;
+    color:#50D4E3;
+}
+.transfer-cont-gas {
+    float: right;
+    padding:5px 0;
+}
+.transfer-cont-gas span {
+    display: block;
+    line-height: 20px;
+    text-align: right;
+}
+.transfer-cont-gas span:first-child {
+    color:#50D4E3;
+}
+
+.account-transfer-bottom {
+    width:100%;
+    margin-top:10px;
+}
+
+@media screen and (min-width: 0) and (max-width: 1000px) {
+    .ant-modal-body {
+        padding:24px 10px!important;
+    }
+    .transfer-head-lefttips,.transfer-head-righttips {
+        margin: 0 5px;
+    }
+    .transfer-head-left,.transfer-head-right {
+        width:48%;
+    }
+    .transfer-head-icon{
+        width:4%;
+        font-size: 12px;
+        padding-top:25px;
+        
+    }
+    .transfer-head-rightaddress,.transfer-head-leftaddress {
+        margin: 0 10px;
+        font-size: 13px;
+        padding:5px 0;
+        height: auto;
+    }
+    .transfer-head-icon-pc {
+        display: none!important;
+    }
+    .transfer-head-icon-mb {
+        display: inline-block!important;
+    }
+    .transfer-head-left, .transfer-head-right {
+        width:100%;
+        text-align: center;
+    }
+    .transfer-head-icon {
+        width:100%;
+        text-align: center;
+        padding-top:5px;
+        padding-bottom: 5px;
+    }
+}
+
+@media screen and (min-width: 1001px) {
+    .transfer-head-icon-pc {
+        display: inline-block!important;
+    }
+    .transfer-head-icon-mb {
+        display: none!important;
+    }
+}

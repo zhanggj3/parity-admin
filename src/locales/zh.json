@@ -1,0 +1,10 @@
+{
+    "account": "账号管理",
+    "contract": "合约管理",
+    "browser": "区块链浏览器",
+    "management": "平台管理",
+    "lang_zh":"中文",
+    "lang_en":"英文",
+    "net_main":"主网",
+    "net_test":"测试网"
+}

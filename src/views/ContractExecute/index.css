@@ -1,0 +1,57 @@
+.contract-execute {
+    width:100%;
+    height:100%;
+}
+
+.contract-execute-cont {
+    width:100%;
+    height:calc(100% - 50px);
+    overflow-y: scroll;
+    padding:30px 0 0 30px;
+    box-sizing: border-box;
+}
+.contract-execute-item {
+    width:100%;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.contract-execute-left {
+    width:200px;
+    float: left;
+    text-align: right;
+    font-size: 14px;
+    line-height: 30px;
+}
+.contract-execute-right {
+    float: left;
+    width:400px;
+    margin-left: 20px;
+}
+
+.contract-execute-button {
+    width:180px!important;
+    margin-top:60px;
+}
+.contract-execute-bottom {
+    width:600px;
+    text-align: center;
+}
+
+@media screen and (min-width: 0) and (max-width: 1000px) {
+    .contract-execute-cont {
+        padding: 15px;
+    }
+    .contract-execute-left {
+        width: 100%;
+        text-align: left;
+    }
+    .contract-execute-right {
+        width: 100%;
+        margin-left: 0;
+    }
+    .contract-execute-bottom {
+        width:100%;
+        text-align: center;
+    }
+}

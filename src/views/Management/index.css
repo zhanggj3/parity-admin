@@ -1,0 +1,32 @@
+.management {
+    width:100%;
+    height:100%;
+}
+
+.management-header {
+    width:100%;
+    height: 40px;
+    line-height: 40px;
+    font-size: 14px;
+    background-color: #F4F4F4;
+    padding:0 60px;
+    box-sizing: border-box;
+}
+
+.management-main {
+    width:100%;
+    height:calc(100% - 40px);
+    overflow-y: scroll;
+}
+
+.management-header>.ant-menu-horizontal > .ant-menu-item, .ant-menu-horizontal > .ant-menu-submenu {
+    margin-right: 40px!important;
+    padding:0!important;
+}
+.management-header>.ant-menu-item, .ant-menu-submenu-title {
+    padding:0!important;
+}
+.management-header>.ant-menu {
+    color:#333!important;
+    font-size: 15px!important;
+}

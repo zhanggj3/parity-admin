@@ -1,0 +1,10 @@
+{
+    "account": "ACCOUNT",
+    "contract": "CONTRACT",
+    "browser": "BROWSER",
+    "management": "MANAGEMENT",
+    "lang_zh":"Chinese",
+    "lang_en":"English",
+    "net_main":"Mainnet",
+    "net_test":"Testnet"
+}

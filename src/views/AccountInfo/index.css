@@ -1,0 +1,387 @@
+.account-info {
+    width:100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+
+@media screen and (min-width: 0) and (max-width: 1000px) {
+    .account-info-left {
+        overflow: hidden;
+        padding-bottom: 20px;
+        margin: 15px;
+        background-color: #F0F0F0;
+    }
+    .mobile-left {
+        width:100%;
+        position: relative;
+        text-align: center;
+        
+    }
+    .mobile-right {
+        width: 100%;
+        padding: 0 20px 0;
+    }
+    .account-info-img {
+        width: 50px;
+        margin-top:40px;
+    
+    }
+    .account-info-code {
+        position: absolute;
+        right:10px;
+        top:10px;
+        width: 25px;
+        cursor:pointer;
+    }
+    .account-info-name {
+        margin:10px 30px 0 30px;
+        word-break: break-all;
+        color:#333333;
+        font-weight: 600;
+    }
+    .account-info-address {
+        word-break: break-all;
+        font-size: 13px;
+        line-height: 17px;
+        padding:5px 10px;
+        text-align:center;
+        margin-bottom: 20px;
+    }
+    .account-info-export {
+        height:30px;
+        width: 140px;
+        margin: 0 auto;
+        margin-top:10px;
+        line-height: 30px;
+        background-color: #715EFF;
+        box-sizing: border-box;
+        color:#fff ;
+        font-size: 13px;
+        font-weight: 200;
+        text-align: center;
+        cursor: pointer;
+        border-radius:4px;
+    }
+    .account-info-keystore {
+        height:30px;
+        width: 140px;
+        margin: 0 auto;
+        margin-top:10px;
+        line-height: 30px;
+        background-color: #3EDDDF;
+        box-sizing: border-box;
+        color:#fff ;
+        font-size: 13px;
+        font-weight: 200;
+        text-align: center;
+        cursor: pointer;
+        border-radius:4px;
+    }
+    .account-info-delete {
+        height:30px;
+        width: 140px;
+        margin: 0 auto;
+        margin-top:10px;
+        line-height: 30px;
+        background-color: #fff;
+        border:1px solid #6753FF;
+        box-sizing: border-box;
+        color:#6753FF ;
+        font-size: 13px;
+        font-weight: 200;
+        text-align: center;
+        cursor: pointer;
+        border-radius:4px;
+    }
+    .accountinfo-right-head {
+        margin:0 10px;
+        box-sizing: border-box;
+        height:60px;
+        border-bottom: 1px solid #BFBFBF;
+    }
+    .account-img {
+        width:25px;
+        /* height: 35px; */
+        margin-top:17px;
+        /* background-color: #ddd; */
+        float: left;
+        margin-right: 5px;
+    }
+    .account-balance {
+        line-height: 60px;
+        font-size: 15px;
+        color:#4250EF ;
+        font-weight: bold;
+        float: left;
+        font-size: 14px;
+    }
+    
+    .account-operate {
+        float: right;
+        margin-top:15px;
+    }
+    
+    .account-transfer {
+        width: 60px;
+        height:30px;
+        line-height:30px;
+        background-color: #9B9B9B;
+        border-radius: 4px;
+        color:#fff;
+        text-align: center;
+        float: left;
+        margin-right: 10px;
+        font-size: 13px;
+    }
+    
+    .account-send {
+        width: 60px;
+        height:30px;
+        line-height:30px;
+        background-color: #50D4E3;
+        border-radius: 4px;
+        color:#fff;
+        text-align: center;
+        float: left;
+        font-size: 13px;
+    }
+    .accountinfo-right-cont {
+        width:100%;
+    }
+    
+    .accountinfo-right-transaction {
+        margin: 0 10px;
+        height:60px;
+        /* border-bottom: 4px solid #F2F1F1; */
+    }
+    
+    .accountinfo-right-transaction p {
+        font-size: 13px;
+        line-height: 21px;
+        padding:2px 10px;
+        border:1px solid #525AE5;
+        color:#525AE5;
+        display: inline-block;
+        border-radius: 4px;
+        margin-top:15px;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+    
+    .accountinfo-right-transaction p.transaction-active {
+        border:0;
+        color:#333;
+    }
+    .account-info-right {
+        height: 100%;
+        /* overflow-y: scroll; */
+        margin: 15px;
+        background-color: #F0F0F0;
+    }
+    .accountinfo-right-table {
+        margin: 0 10px;
+        overflow-x: scroll;
+        height: calc(100% - 120px);
+        padding-bottom: 120px;
+    }
+
+    .transaction-table {
+        width:1000px;
+    }
+}
+
+@media screen and (min-width: 1001px) {
+    .account-info {
+        padding:40px;
+        box-sizing: border-box;
+        overflow-y: scroll;
+    }
+    .account-info-left {
+        width:300px;
+        float: left;
+        text-align: center;
+        box-sizing: border-box;
+        position: relative;
+        background-color: #f7f7f7;
+        height:100%;
+        overflow-y: scroll;
+    }
+    
+    .account-info-right {
+        margin-left: 330px;
+        height: 100%;
+        background-color: #F7F7F7;
+        overflow-y: scroll;
+    }
+    
+    .account-info-img {
+        width: 50px;
+        margin-top:40px;
+    
+    }
+    
+    .account-info-name {
+        margin:10px 30px 0 30px;
+        word-break: break-all;
+    }
+    .account-info-address {
+        word-break: break-all;
+        margin:20px 10px;
+        /* background-color: #D8D8D8; */
+        font-size: 12px;
+        line-height: 17px;
+        /* padding:10px; */
+        text-align:center;
+    }
+    
+    .account-info-export {
+        /* margin: 10px; */
+        width:150px;
+        margin:10px auto;
+        height:30px;
+        line-height: 30px;
+        background-color: #715EFF;
+        box-sizing: border-box;
+        color:#fff ;
+        font-size: 13px;
+        font-weight: 200;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .account-info-keystore {
+        width:150px;
+        margin:10px auto;
+        height:30px;
+        line-height: 30px;
+        background-color: #3EDDDF;
+        box-sizing: border-box;
+        color:#fff ;
+        font-size: 13px;
+        font-weight: 200;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .account-info-delete {
+        width:150px;
+        margin:0 auto;
+        height:30px;
+        line-height: 30px;
+        background-color: #fff;
+        box-sizing: border-box;
+        border:1px solid #6753FF;
+        color:#6753FF ;
+        font-size: 13px;
+        font-weight: 200;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    
+    .account-info-code {
+        position: absolute;
+        right:10px;
+        top:10px;
+        width: 25px;
+        cursor:pointer;
+    }
+    
+    .accountinfo-right-head {
+        width:100%;
+        padding:0 25px;
+        box-sizing: border-box;
+        height:60px;
+        border-bottom: 1px solid #E0E0E0;
+    }
+    
+    .account-img {
+        width:35px;
+        height: 35px;
+        margin-top:12.5px;
+        /* background-color: #ddd; */
+        float: left;
+        margin-right: 10px;
+    }
+    .account-balance {
+        line-height: 60px;
+        font-size: 18px;
+        color:#4250EF ;
+        font-weight: bold;
+        float: left;
+    }
+    
+    .account-operate {
+        float: right;
+        margin-top:15px;
+    }
+    
+    .account-transfer {
+        width: 80px;
+        height:30px;
+        line-height:30px;
+        background-color: #9B9B9B;
+        border-radius: 4px;
+        color:#fff;
+        text-align: center;
+        float: left;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+    
+    .account-send {
+        width: 80px;
+        height:30px;
+        line-height:30px;
+        background-color: #50D4E3;
+        border-radius: 4px;
+        color:#fff;
+        text-align: center;
+        float: left;
+        cursor: pointer;
+    }
+    
+    .accountinfo-right-cont {
+        width:100%;
+    }
+    
+    .accountinfo-right-transaction {
+        margin: 0 10px;
+        height:60px;
+        /* border-bottom: 4px solid #F2F1F1; */
+    }
+    
+    .accountinfo-right-transaction p {
+        font-size: 15px;
+        line-height: 21px;
+        padding:2px 10px;
+        border:1px solid #525AE5;
+        color:#525AE5;
+        display: inline-block;
+        border-radius: 4px;
+        margin-top:15px;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+    
+    .accountinfo-right-transaction p.transaction-active {
+        border:0;
+        color:#333;
+    }
+
+    .accountinfo-right-table {
+        margin: 0 10px;
+        overflow-x: scroll;
+        height: calc(100% - 120px);
+        padding-bottom: 20px;
+        min-height: 130px;
+        /* width: 100%; */
+    }
+
+    .transaction-table {
+        width:100%;
+    }
+
+    
+}

@@ -1,0 +1,33 @@
+.contract-deploy-options {
+    width:100%;
+    height:30px;
+    line-height: 30px;
+    border-radius:4px;
+    overflow: hidden;
+    margin:20px 0 10px;
+}
+.contract-deploy-options p {
+    width:50%;
+    float: left;
+    text-align: center;
+    color:#fff;
+    font-size: 12px;
+    background-color:rgba(194,194,194,1);
+    cursor: pointer;
+}
+.contract-deploy-options p.deply-active {
+    background-color:#ACA7D3;
+}
+
+@media screen and (min-width: 0) and (max-width: 1000px) {
+    .account-overviewsend-cont {
+        padding: 20px 10px 40px 10px;
+    }
+    .overviewsend-right {
+        float: left;
+        width: calc(100% - 70px);
+    }
+    .contract-deploy-options {
+        margin: 10px 0 10px;
+    }
+}

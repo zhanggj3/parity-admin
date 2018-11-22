@@ -1,0 +1,42 @@
+.account-add {
+    width:100%;
+}
+
+.account-add-input {
+    width:100%;
+}
+
+.account-add-cont {
+    width:100%;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.account-add-left {
+    width:120px;
+    float: left;
+    font-size: 15px;
+    line-height: 30px;
+    color:#4A4A4A;
+    text-align: right;
+    margin-right:10px;
+}
+
+.account-add-right {
+    width:calc(100% - 130px)!important;
+    float: left;
+}
+.warning-tips {
+    display: block;
+    color:red;
+}
+
+@media screen and (min-width: 0) and (max-width: 1000px) {
+    .account-add-left {
+        width:80px;
+    }
+    .account-add-right {
+        width:calc(100% - 90px)!important;
+        float: left;
+    }
+}

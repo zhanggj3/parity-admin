@@ -1,0 +1,144 @@
+.contract {
+    width:100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.contract-header {
+    width:100%;
+    height:40px;
+    background-color: #F4F4F4;
+}
+
+.contract-header span {
+    display: inline-block;
+    line-height: 37px;
+    color:#6753FF;
+    border-bottom: 3px solid #6753FF;
+    font-size: 15px;
+    font-weight: 600;
+    margin-left: 80px;
+}
+
+.contract-deploy {
+    margin: 0 100px 0 40px;
+    height:100px;
+    border-bottom: 1px solid #C2C2C2;
+}
+
+.contract-deploy-button {
+    width:150px!important;
+    margin-top:20px!important;
+}
+
+.contract-watch-button {
+    width:150px!important;
+    margin-top:10px!important;
+    background-color: #3EDDDF!important;
+    border-color:#3EDDDF!important;
+}
+
+.contract-watch {
+    margin: 20px 100px 0 40px;
+}
+
+.contract-watch-title {
+    font-size:14px;
+    color: #666666;
+    line-height: 20px;
+    font-weight:200;
+}
+
+.contract-watch-tips {
+    font-size:12px;
+    color: #666666;
+    line-height: 15px;
+    font-weight:200;
+}
+
+.contract-watch-list {
+    width:100%;
+    overflow: hidden;
+    margin:20px 0 0;
+}
+
+.contract-watch-list li {
+    width:24%;
+    float: left;
+    overflow: hidden;
+    margin-right: 1%;
+    margin-bottom:15px;
+    cursor: pointer;
+}
+.contract-watch-list li:nth-child(4n+4){
+    margin-right:0;
+}
+
+.watch-list-user {
+    width:32px;
+    float: left;
+    display: block;
+    padding-top:7px;
+}
+.watch-list-text {
+    float: left;
+    padding-left:10px;
+    width:calc(100% - 42px);
+}
+
+.watch-list-name {
+    width:100%;
+    font-size: 13px;
+    line-height: 16px;
+    color:#6753FF;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.watch-list-balance,.watch-list-address {
+    font-size: 13px;
+    color:#999999;
+    line-height: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media screen and (min-width: 0) and (max-width: 1000px) {
+    .contract-header span {
+        margin-left: 35px;
+    }
+    .contract-deploy {
+        margin:0 25px;
+        text-align: center;
+    }
+    .contract-deploy {
+        height:72px;
+    }
+    .contract-watch {
+        margin: 20px 25px 25px 25px;
+    }
+    .contract-watch-tips {
+        margin-top:10px;
+    }
+    .contract-watch-list li {
+        width:49%;
+        margin-right: 2%;
+        margin-bottom:30px;
+    }
+    .contract-watch-list li:nth-child(2n+1) {
+        margin-right: 0;
+    }
+
+    .contract-header {
+        height:40px;
+    }
+
+    .contract-header span {
+        line-height: 37px;
+    }
+
+}
+

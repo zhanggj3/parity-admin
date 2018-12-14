@@ -2,25 +2,26 @@ import React, { Component } from 'react';
 import AccountList from '../AccountList';
 import AccountInfo from '../AccountInfo';
 import { createHashHistory } from 'history';
+import { injectIntl } from 'react-intl';
 import './index.css';
 
-class Home extends Component {
-	constructor(){
-		super();
+class AccountOverview extends Component {
+	constructor(props){
+		super(props);
 		this.state = {
 			accountState:true,
 			clickAddress:'',
 			clickName:'',
 			state:true,
-			title:'ACCOUNT OVERVIEW',
+			title:this.props.intl.formatMessage({id:"account-overview"}),
 			list:[
 				{
-					label:"ACCOUNT",
+					label:this.props.intl.formatMessage({id:"account-home"}),
 					id:0,
 					path:'/'
 				},
 				{
-					label:"SEND",
+					label:this.props.intl.formatMessage({id:"account-send"}),
 					id:1,
 					path:'/send'
 				}
@@ -29,6 +30,7 @@ class Home extends Component {
 	}
 
 	changeAccountState(item){
+		
 		this.setState({clickAddress:item.address,clickName:item.name,state:false});
 	}
 
@@ -37,7 +39,7 @@ class Home extends Component {
 			this.setState({state:true});
 			return;
 		}
-		createHashHistory().push(item.path);
+		createHashHistory().replace(item.path);
 	}
 
 	toListPage(){
@@ -80,4 +82,4 @@ class Home extends Component {
 	}
 }
 
-export default Home;
+export default injectIntl(AccountOverview);

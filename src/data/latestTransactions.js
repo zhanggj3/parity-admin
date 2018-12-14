@@ -1,5 +1,5 @@
 import React from 'react';
-import {bigNumber} from '../utils/0xExchange';
+import {bigNumber,BufferString} from '../utils/0xExchange';
 export const columns = [
     {
         title: 'Hash',
@@ -19,7 +19,7 @@ export const columns = [
         dataIndex: 'transaction',
         key: 'to',
         align:'center',
-        render:transaction=><span>{"0x"+transaction.to}</span>
+        render:transaction=><span>{"0x"+BufferString(transaction.toV1)}</span>
     },
     {
         title: 'Amount',

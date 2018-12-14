@@ -21,12 +21,10 @@
 .comp-side-ul li {
     width:100%;
     margin:0 auto;
-    margin-bottom:10px;
     position: relative;
-    padding-bottom: 12px;
 }
 .li-cont {
-    padding:18px 0;
+    padding:32px 0;
     width:100%;
     box-sizing: border-box;
     text-align: center;
@@ -41,8 +39,8 @@
 }
 
 .comp-side-ul li>.li-cont.active {
-    background-color: #363EC8;
-    color:#50D4E3;
+    background-color: #513FD5;
+    color:#fff;
 }
 /* .comp-side-ul li:after {
     content: " ";

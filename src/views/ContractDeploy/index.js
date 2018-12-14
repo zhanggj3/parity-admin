@@ -6,14 +6,16 @@ import ContractDeploySend from '../ContractDeploySend';
 // import queryString from  'query-string' 
 import Contractinput from '../ContractInput';
 import {formatterTo0x,formatAmount} from '../../utils/0xExchange';
+import Process from '../../component/Process';
 import { Input,Select,Checkbox,message } from 'antd';
+import { injectIntl,FormattedMessage } from 'react-intl';
 
 import './index.css';
 
 const Option = Select.Option;
 const { TextArea } = Input;
 
-class Home extends Component {
+class ContractDeploy extends Component {
 	constructor(){
 		super();
 		this.state = {
@@ -26,6 +28,7 @@ class Home extends Component {
             code:'',
 			sendState:false,
 			gas:21000,
+			defaultGas:21000,
 			gasPrice:21000,
             checkState:false,
 			currentTab:1,
@@ -35,12 +38,29 @@ class Home extends Component {
 	}
 
 	componentWillMount() {
-        this.getAccountData();	
+		this.getAccountData();
+		this.getGasPrice();	
         let defaultAccount = getStorage("defaultAccount");
         if(defaultAccount && defaultAccount !== ''){
             defaultAccount = JSON.parse(defaultAccount);
             this.setState({from:defaultAccount.address});
         }
+	}
+
+	estimateGas(data) {
+		web3.appchain.estimateGas({
+			data:data
+		}).then((data)=>{
+			// let gas = web3.utils.hexToNumber(data);
+			this.setState({defaultGas:data});
+		})
+	}
+
+	getGasPrice(){
+		web3.appchain.getGasPrice().then((data)=>{
+			let gasPrice = web3.utils.hexToNumber(data);
+			this.setState({gasPrice:gasPrice});
+		})
 	}
 
 	handleAmount(event){
@@ -56,7 +76,6 @@ class Home extends Component {
 
 	handleData(event){
 		let abiArray = event.target.value;
-		console.log(typeof(abiArray));
 		let abiArrayParse = this.jsonPromise(abiArray).catch((err)=>{
 			message.error(err.message);
 			return;
@@ -76,7 +95,31 @@ class Home extends Component {
     }
     
     handleCode(event){
-        this.setState({code:event.target.value});
+		this.setState({code:event.target.value});
+		let jsonInterface = JSON.parse(this.state.abi);
+        let contract = new web3.appchain.Contract(jsonInterface,this.state.from);
+		let params;
+		if(this.state.argument) {
+			if(this.state.argument.length > 0){
+				params = [];
+				for(var i=0;i<this.state.argument.length;i++){
+					let obj = this.state.argument[i];
+					if(obj.params && obj.params !== '') {
+						params.push(web3.utils.toHex(obj.params));
+					}else{
+						message.warning(obj.name+" the value is null!");
+						return;
+					}
+				}
+				params = [params];
+			}else{
+				params = [];
+			}
+			
+		}
+		let bytecode = contract.deploy({data: event.target.value,arguments: params}).encodeABI();
+		console.log(bytecode);
+		this.estimateGas("0x"+bytecode);
 	}
 
 	handleName(event){
@@ -87,7 +130,7 @@ class Home extends Component {
 		this.setState({from:value});
 		if(this.state.checkState && this.state.checkState === true){
 			this.getBalance(value).then((data)=>{
-				this.setState({amount:Number(formatAmount(data))});
+				this.setState({amount:formatAmount(web3.utils.toBN(data).sub(web3.utils.toBN(this.state.gas*this.state.gasPrice)).toString(10))});
 			})
 		}else{
 			this.setState({amount:0});
@@ -95,11 +138,10 @@ class Home extends Component {
 	}
 
 	onChange(e) {
-		// console.log(`checked = ${e.target.checked}`);
 		this.setState({checkState:e.target.checked});
 		if(e.target.checked && e.target.checked === true){
 			this.getBalance(this.state.from).then((data)=>{
-				this.setState({amount:Number(formatAmount(data))});
+				this.setState({amount:formatAmount(web3.utils.toBN(data).sub(web3.utils.toBN(this.state.gas*this.state.gasPrice)).toString(10))});
 			})
 		}else{
 			this.setState({amount:0});
@@ -168,11 +210,24 @@ class Home extends Component {
 	}
 
 	tabExchange(id){
+		if(!this.state.abi || this.state.abi === ''){
+			message.warning("Contract ABI should not be empty!");
+			return;
+		}
 		this.setState({currentTab:id});
 	}
 
+	getGas(value){
+		this.setState({gas:value});
+		if(this.state.checkState && this.state.checkState === true){
+			this.getBalance(this.state.from).then((data)=>{
+				this.setState({amount:formatAmount(web3.utils.toBN(data).sub(web3.utils.toBN(value*this.state.gasPrice)).toString(10))});
+			})
+		}
+	}
+
 	render() {
-		const {accountList,from,amount,abi,sendState,gas,gasPrice,checkState,currentTab,code,argument,name} = this.state;
+		const {accountList,from,amount,abi,sendState,gas,gasPrice,checkState,currentTab,code,defaultGas,argument,name} = this.state;
 		let fromAddress = accountList && accountList.length>0? accountList.map((accountItem, index) => (
             <Option key={index} value={formatterTo0x(accountItem.address)}>{accountItem.name}</Option>
 		)):'';
@@ -195,13 +250,13 @@ class Home extends Component {
 		return (
 			<div className="account">
 				<div className="contract-header">
-                    <span>Deploy Contract</span>
+                    <p><FormattedMessage id="contract-deploy" /></p>
                 </div>
 				<div className="account-main">
 					<div className="account-overviewsend">
 						<div className="account-overviewsend-cont">
 							<div className="overviewsend-center">
-								<p className="overviewsend-left">From:</p>
+								<p className="overviewsend-left"><FormattedMessage id="from" />:</p>
 								<div className="overviewsend-right">
 									<Select className="overviewsend-right" value={from} style={{ width: "200px" }} onChange={this.handleChange.bind(this)}>
 										{fromAddress}
@@ -210,14 +265,14 @@ class Home extends Component {
 								
 							</div>
 							<div className="overviewsend-center">
-								<p className="overviewsend-left">Name:</p>
+								<p className="overviewsend-left"><FormattedMessage id="contract-name" />:</p>
 								<div className="overviewsend-right">
 									<Input type="text" placeholder="Contract Name" onChange={this.handleName.bind(this)} value={name} />
 								</div>
 								
 							</div>
 							<div className="overviewsend-center">
-								<p className="overviewsend-left">Amount:</p>
+								<p className="overviewsend-left"><FormattedMessage id="amount" />:</p>
 								<div className="overviewsend-right">
 									<Input disabled={checkState} placeholder="Amount Input" onChange={this.handleAmount.bind(this)} value={amount} />
 									<div className="overviewsend-tips">
@@ -239,11 +294,12 @@ class Home extends Component {
 							</div>
 
 							<div className="overviewsend-center">
-								<p className="overviewsend-left">Gas Fee:</p>
+								<p className="overviewsend-left"><FormattedMessage id="gasFee" />:</p>
 								<div className="overviewsend-right">
-									<p className="overviewsend-gasfee">{gas*gasPrice} SEE</p>
-									<p className="overviewsend-calculate">≈ Gas({gas})*Gas Price ({gasPrice} SEG)</p>
-									<p className="overviewsend-next" onClick={this.next.bind(this)}>Next</p>
+									<p className="overviewsend-gasfee">{formatAmount(gas*gasPrice)} SEE</p>
+									<p className="overviewsend-calculate">≈ SEG limit({gas})*SEG Price ({gasPrice} SEG)</p>
+									<Process defaultGas={defaultGas} getGas={this.getGas.bind(this)} ></Process>
+									<p className="overviewsend-next" onClick={this.next.bind(this)}><FormattedMessage id="next" /></p>
 								</div>
 							</div>
 						</div>
@@ -257,4 +313,4 @@ class Home extends Component {
 	}
 }
 
-export default Home;
+export default injectIntl(ContractDeploy);

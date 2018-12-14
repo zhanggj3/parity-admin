@@ -23,7 +23,6 @@ export function pushStorage (key,data) {
     Storage.setItem(key,JSON.stringify(prevDataArr));
 }
 export function replaceStorage (key,data,matchKey) {
-    console.log(data);
     let prevDataArr = getStorage(key);
     if(!prevDataArr || prevDataArr === '[]' || prevDataArr === ''){
         prevDataArr = [];
@@ -58,13 +57,12 @@ export function replaceNameStorage (key,name,matchValue) {
     Storage.setItem(key,JSON.stringify(prevDataArr));
 }
 
-export function deleteStorage (key,matchValue) {
+export function deleteStorage (key,matchValue,matchKey) {
     let prevDataArr = getStorage(key);
     if(prevDataArr && prevDataArr !== '[]' && prevDataArr !== ''){
         prevDataArr = JSON.parse(prevDataArr);
-        console.log(prevDataArr)
         for(let i=0;i<prevDataArr.length;i++){
-            if(prevDataArr[i].address === matchValue){
+            if(prevDataArr[i][matchKey] === matchValue){
                 prevDataArr.splice(i,1);
             }else{
                 continue;

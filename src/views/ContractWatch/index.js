@@ -2,10 +2,11 @@ import React from 'react';
 import { Modal,Input,message } from 'antd';
 import web3 from '../../utils/web3';
 import {replaceStorage} from '../../utils/storage';
+import { injectIntl,FormattedMessage } from 'react-intl';
 import './index.css';
 const { TextArea } = Input;
 
-export default class Addaccount extends React.Component {
+class ContractWatch extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -61,26 +62,26 @@ export default class Addaccount extends React.Component {
         return (
             <div className="contract-watch-dialog">
                 <Modal
-                    title="CONTRACT WATCH"
+                    title={this.props.intl.formatMessage({id:"contract-watch"})}
                     visible={this.props.state}
                     onOk={this.handleOk.bind(this)}
                     onCancel={this.handleCancel.bind(this)}
                     >
                     <div className="watch-dialog-main">
                         <div className="account-add-cont">
-                            <p className="account-add-left">address:</p>
+                            <p className="account-add-left"><FormattedMessage id="contract-address" />:</p>
                             <div className="account-add-right">
                                 <Input placeholder="contract address" onChange={this.handleAddress.bind(this)} value={address}/>
                             </div>
                         </div>
                         <div className="account-add-cont">
-                            <p className="account-add-left">name:</p>
+                            <p className="account-add-left"><FormattedMessage id="contract-name" />:</p>
                             <div className="account-add-right">
                                 <Input placeholder="contract name" type="text" onChange={this.handleName.bind(this)} value={name}/>
                             </div>
                         </div>
                         <div className="account-add-cont">
-                            <p className="account-add-left">abi:</p>
+                            <p className="account-add-left"><FormattedMessage id="contract-abi" />:</p>
                             <div className="account-add-right">
                                 <TextArea placeholder="contract abi " rows={4} onChange={this.handleAbi.bind(this)} value={abi}/>
                             </div>
@@ -91,3 +92,5 @@ export default class Addaccount extends React.Component {
 		);
 	};
 }
+
+export default injectIntl(ContractWatch);

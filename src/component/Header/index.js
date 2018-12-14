@@ -6,6 +6,8 @@ import {formatterTo0x,formatAmount} from '../../utils/0xExchange';
 import web3 from '../../utils/web3';
 import async from 'async';
 import { FormattedMessage } from 'react-intl';
+import { withRouter } from 'react-router';
+import blockies from '../../utils/blockies';
 import './index.css';
 
 
@@ -20,8 +22,10 @@ class Header extends Component {
             net:'',
             lang:'',
             logo:require("../../image/insee-logo.png"),
-            userIcon:require("../../image/insee-icon.png")
-
+            userIcon:require("../../image/insee-icon.png"),
+            currentIndex:'account',
+            srcImg:require("../../image/insee-icon.png"),
+            menuImg:require("../../image/menu.svg")
         }
     }
 
@@ -55,6 +59,16 @@ class Header extends Component {
         }else{
             this.setState({lang:"English"});
             setStorage("lang","English");
+        }
+
+        const { location } = this.props;
+        if(location.pathname && location.pathname !== ''){
+            let currentTab = location.pathname;
+            currentTab = currentTab.substring(1);
+            if(currentTab === '' || !currentTab){
+                currentTab = "account";
+            }
+            this.setState({currentIndex:currentTab});
         }
     }
 
@@ -104,6 +118,8 @@ class Header extends Component {
                 that.getAccounts().then((accounts)=>{
                     async.eachSeries(accounts,function(account,eachCallback){
                         that.getBalance(formatterTo0x(account.address)).then((data) =>{
+                            let source = blockies.create({ seed:formatterTo0x(account.address) ,size: 8,scale: 16}).toDataURL();
+                            account.img = source;
                             account.balance = data;
                             account.address = formatterTo0x(account.address);
                             accountData.push(account);
@@ -120,7 +136,8 @@ class Header extends Component {
                     defaultAccount = JSON.parse(defaultAccount);
                     that.setState({
                         defaultName:defaultAccount.name,
-                        accountList:accountData
+                        accountList:accountData,
+                        srcImg:defaultAccount.img
                     })
                     that.getBalance(defaultAccount.address).then((data)=>{
                         that.setState({defaultBalance:data});
@@ -130,7 +147,8 @@ class Header extends Component {
                         defaultAccount = accountData[0];
                         that.setState({
                             defaultName:defaultAccount.name,
-                            accountList:accountData
+                            accountList:accountData,
+                            srcImg:accountData[0].img
                         })
                         that.getBalance(defaultAccount.address).then((data)=>{
                             that.setState({defaultBalance:data});
@@ -154,7 +172,8 @@ class Header extends Component {
     defaultAccount(item){
         this.setState({
             defaultName:item.name,
-            defaultBalance:item.balance
+            defaultBalance:item.balance,
+            srcImg:item.img
         })
         setStorage("defaultAccount",JSON.stringify(item));
         window.location.reload();
@@ -170,12 +189,37 @@ class Header extends Component {
         window.location.reload();
     }
 
+    getMenuIndex(path) {
+        this.setState({currentIndex:path});
+    }
+
     render() {
         // const {intl} = this.props;
-        const {menuState,accountList,defaultName,defaultBalance,net,lang,logo,userIcon} = this.state;
+        const {menuState,accountList,defaultName,defaultBalance,net,lang,logo,currentIndex,srcImg,menuImg} = this.state;
+        const { location } = this.props
+        let title;
+        switch(location.pathname){
+            case '/':
+                title="account";
+                break;
+            case '/contract':
+                title="contract";
+                break;
+            case '/browser':
+                title="browser";
+                break;
+            case '/management':
+                title="management";
+                break;
+            default:
+                title="account";
+        }
+            
+
 
         let accountArray = accountList && accountList.length>0? accountList.map((accountItem, index) => (
             <Menu.Item key={index} onClick={this.defaultAccount.bind(this,accountItem)}>
+                <img style={{width:"25px",borderRadius:"12px",marginRight:"10px"}} src={accountItem.img} alt=""/>
                 <span>{accountItem.name}</span>
             </Menu.Item>            
         )): (<Menu.Item>Not Found</Menu.Item>);
@@ -209,19 +253,19 @@ class Header extends Component {
                 width="200px"
             >
                 <div className="mobile-side">
-					<MobileSide></MobileSide>
+					<MobileSide currentIndex={currentIndex} getMenuIndex={this.getMenuIndex.bind(this)}></MobileSide>
                     <Dropdown className="mobile-drop" overlay={netList}>
                         <span className="ant-dropdown-link">
-                            <i style={{fontStyle:"normal",float:"left"}}>{net}</i><Icon style={{display:"inline-block",float:"right",marginTop:"2px",fontSize:"20px"}} type="caret-down" />
+                            <i style={{fontStyle:"normal",float:"left"}}>{net}</i><Icon type="caret-down" style={{display:"inline-block",float:"right",marginTop:"2px",fontSize:"20px"}}/>
                         </span>
                     </Dropdown>
                     <Dropdown className="mobile-drop" overlay={langList}>
                         <span className="ant-dropdown-link">
-                            <i style={{fontStyle:"normal",float:"left"}}>{lang}</i><Icon style={{display:"inline-block",float:"right",marginTop:"2px",fontSize:"20px"}} type="caret-down" />
+                            <i style={{fontStyle:"normal",float:"left"}}>{lang}</i><Icon type="caret-down" style={{display:"inline-block",float:"right",marginTop:"2px",fontSize:"20px"}} />
                         </span>
                     </Dropdown>
                     <div className="mobile-side-logo">
-                        <p style={{width:"30px",marginLeft:"30px",float:"left"}}>
+                        <p style={{width:"30px",marginLeft:"20px",float:"left"}}>
                             <img style={{width:"100%"}} src={logo} alt=""/>
                         </p>
                         <p className="mobile-version">v1.0.0-beta.36</p>
@@ -233,13 +277,14 @@ class Header extends Component {
             <div className="header">
                 <Row>
                     <Col span={2} className="mobile-menu" onClick={this.showMenu.bind(this)}>
-                        <Icon type="bars" theme="outlined" />
+                        {/* <Icon type="bars" theme="outlined" /> */}
+                        <img style={{width:"20px",display:"block",marginTop:"15px",cursor:"pointer"}} src={menuImg} alt="" />
                     </Col>
                     <Col span={22} className="mobile-header">
-                        <p className="mobile-title">账户管理</p>
+                        <p className="mobile-title"><FormattedMessage id={title}/></p>
                         <Dropdown className="mobile-account-drop" onClick={this.getAccountData.bind(this)} overlay={accountMenu} trigger={['click']}>
                             <div className="ant-dropdown-link"> 
-                                <img className="header-account-img" src={logo} alt=""/>
+                                <img className="header-account-img" src={srcImg} alt=""/>
                             </div>
                         </Dropdown>
                     </Col>
@@ -251,18 +296,18 @@ class Header extends Component {
                     <Col span={20} className="header-second">
                         <Dropdown className="header-drop" overlay={netList}>
                             <span className="ant-dropdown-link">
-                                {net} <Icon type="down" />
+                                {net} <Icon type="caret-down" style={{color:"#6753FF"}} />
                             </span>
                         </Dropdown>
                         <Dropdown className="header-drop" overlay={langList}>
                             <span className="ant-dropdown-link">
-                                {lang} <Icon type="up" />
+                                {lang} <Icon type="caret-down" style={{color:"#6753FF"}} />
                             </span>
                         </Dropdown>
                         <div className="header-account">
                             <Dropdown onClick={this.getAccountData.bind(this)} overlay={accountMenu} trigger={['click']}>
                                 <div className="ant-dropdown-link"> 
-                                    <img className="header-account-img" src={userIcon} alt=""/>
+                                    <img className="header-account-img" src={srcImg} alt=""/>
                                     <div className="header-account-text">
                                         <p>{defaultName || null}</p>
                                         <p>{formatAmount(defaultBalance)} SEE</p>
@@ -279,4 +324,4 @@ class Header extends Component {
     }
 }
 
-export default Header;
+export default withRouter(Header);

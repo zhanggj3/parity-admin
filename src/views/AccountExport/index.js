@@ -3,9 +3,11 @@ import { Modal,Input,message,Spin } from 'antd';
 import {getStorage} from '../../utils/storage';
 import {getPrivateKey} from '../../utils/api';
 import {formatterFrom0x,formatterTo0x} from '../../utils/0xExchange';
+import { injectIntl,FormattedMessage } from 'react-intl';
 const FileSaver = require('file-saver');
 
-export default class Addaccount extends React.Component {
+
+class AccountExport extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -59,14 +61,6 @@ export default class Addaccount extends React.Component {
             message.warning('WRITE YOUR PASSWORD!');
             return;
         }
-        if(!this.state.checkPassword || this.state.checkPassword === ''){
-            message.warning('VERIFY YOUR PASSWORD!');
-            return;
-        }
-        if(this.state.checkPassword !== this.state.password) {
-            message.warning('PASSWORD INCONSISTENT!');
-            return;
-        }
 
         this.setState({loading:true});
         this.setState({timerID:setInterval(() => this.exportAccount(),1000)});
@@ -78,10 +72,9 @@ export default class Addaccount extends React.Component {
         let that = this;
         clearInterval(this.state.timerID);
         that.getKey().then((data)=>{
-            console.log(data);
             let keyStore = that.getKeyStore(that.props.address);
             // let storeObj = JSON.parse(keyStore);
-            keyStore.privateKey = formatterTo0x(data);
+            // keyStore.privateKey = formatterTo0x(data);
             let exportData = JSON.stringify(keyStore);
             // let blob = new Blob([exportData], {type: "text/plain;charset=utf-8"});
             // FileSaver.saveAs(blob, "keyStore.txt");
@@ -103,22 +96,38 @@ export default class Addaccount extends React.Component {
         this.props.callbackParent();
     }
 	render() {
-        const {password,checkPassword,loading} = this.state;
-        let warnigTips = (password === checkPassword) ? 
-        (<span></span>):(<span className="warning-tips">*the supplied passwords does not match</span>);
+        const {password,loading} = this.state;
+        // let warnigTips = (password === checkPassword) ? 
+        // (<span></span>):(<span className="warning-tips">*<FormattedMessage id="password-match" /></span>);
 
         const container = (
             <div className="addaccount-input">
-                <p>{this.props.address}</p>
-                <Input placeholder="password" type="password" onChange={this.handlePass.bind(this)} value={this.state.password}/>
-                <Input placeholder="password repeat" type="password" onChange={this.handleCheckPass.bind(this)} value={this.state.checkPassword}/>
-                {warnigTips}
+                <div className="account-add-cont">
+                    <p className="account-add-left"><FormattedMessage id="account-address" />:</p>
+                    <div className="account-add-right">
+                        <span style={{lineHeight:"30px",fontSize:"15px"}}>{this.props.address}</span>
+                    </div>
+                </div>
+                <div className="account-add-cont">
+                    <p className="account-add-left"><FormattedMessage id="account-password" />:</p>
+                    <div className="account-add-right">
+                        <Input placeholder="password" type="password" onChange={this.handlePass.bind(this)} value={password}/>
+                    </div>
+                </div>
+                {/* <div className="account-add-cont">
+                    <p className="account-add-left"><FormattedMessage id="password-repeat" />:</p>
+                    <div className="account-add-right">
+                        <Input placeholder="password repeat" type="password" onChange={this.handleCheckPass.bind(this)} value={this.state.checkPassword}/>
+                        {warnigTips}
+                    </div>
+                </div> */}
+                
             </div>
         )
         return (
             <div>
                 <Modal
-                    title="EXPORT ACCOUNT"
+                    title={this.props.intl.formatMessage({id:"export-keystore"})}
                     visible={this.props.addState}
                     onOk={this.handleOk.bind(this)}
                     onCancel={this.handleCancel.bind(this)}
@@ -132,3 +141,5 @@ export default class Addaccount extends React.Component {
 		);
 	};
 }
+
+export default injectIntl(AccountExport);

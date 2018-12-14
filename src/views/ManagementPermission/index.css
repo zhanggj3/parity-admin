@@ -1,0 +1,12 @@
+.management-accountList-button {
+    float: right;
+    margin-right: 20px;
+    border-color:#6753FF!important;
+    color:#6753FF!important;
+}
+@media screen and (min-width: 0) and (max-width: 1000px) {
+    .management-accountList-button {
+        float: left;
+        margin-left:10px;
+    }
+}

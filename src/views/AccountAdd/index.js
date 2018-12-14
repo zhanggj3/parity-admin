@@ -3,8 +3,9 @@ import { Modal,Checkbox,Input,message } from 'antd';
 // import pkutils from '../../utils/keyMnemonic';
 import './index.css';
 import MnemonicAdd from '../AccountMnemonic';
+import { injectIntl,FormattedMessage } from 'react-intl';
 
-export default class Addaccount extends React.Component {
+class Addaccount extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -69,7 +70,7 @@ export default class Addaccount extends React.Component {
 	render() {
         const {password,checkPassword,mnemonicState,name,showState} = this.state;
         let warnigTips = (password === checkPassword) ? 
-        (<span></span>):(<span className="warning-tips">* passwords does not match</span>);
+        (<span></span>):(<span className="warning-tips">* <FormattedMessage id="password-match" /></span>);
 
         let mnemonicDialog = (mnemonicState === true) ? 
         (<MnemonicAdd 
@@ -82,31 +83,31 @@ export default class Addaccount extends React.Component {
         return (
             <div className="account-add">
                 <Modal
-                    title="CREATE ACCOUNT"
+                    title={this.props.intl.formatMessage({id:"account-create"})}
                     visible={this.props.state}
                     onOk={this.handleOk.bind(this)}
                     onCancel={this.handleCancel.bind(this)}
                     >
                     <div className="account-add-input">
                         <div className="account-add-cont">
-                            <p className="account-add-left">name:</p>
+                            <p className="account-add-left"><FormattedMessage id="account-name" />:</p>
                             <div className="account-add-right">
                                 <Input placeholder="account name" onChange={this.handleName.bind(this)} value={this.state.name}/>
                             </div>
                         </div>
                         <div className="account-add-cont">
-                            <p className="account-add-left">password:</p>
+                            <p className="account-add-left"><FormattedMessage id="account-password" />:</p>
                             <div className="account-add-right">
                                 <Input style={{display: (showState===true) ? "block" : "none"}} placeholder="password" type="text" onChange={this.handlePass.bind(this)} value={this.state.password}/>
                                 <Input style={{display: (showState===false) ? "block" : "none"}} placeholder="password" type="password" onChange={this.handlePass.bind(this)} value={this.state.password}/>
                             </div>
                         </div>
                         <div className="account-add-cont">
-                            <p className="account-add-left">repeat:</p>
+                            <p className="account-add-left"><FormattedMessage id="password-repeat" />:</p>
                             <div className="account-add-right">
                                 <Input style={{display: (showState===true) ? "block" : "none"}} placeholder="password repeat" type="text" onChange={this.handleCheckPass.bind(this)} value={this.state.checkPassword}/>
                                 <Input style={{display: (showState===false) ? "block" : "none"}} placeholder="password repeat" type="password" onChange={this.handleCheckPass.bind(this)} value={this.state.checkPassword}/>
-                                <Checkbox className="overviewsend-checkbox" onChange={this.handleShow.bind(this)}>Show Password</Checkbox>
+                                <Checkbox className="overviewsend-checkbox" onChange={this.handleShow.bind(this)}><FormattedMessage id="password-show" /></Checkbox>
                                 {warnigTips}
                             </div>
                         </div>
@@ -118,3 +119,5 @@ export default class Addaccount extends React.Component {
 		);
 	};
 }
+
+export default injectIntl(Addaccount);

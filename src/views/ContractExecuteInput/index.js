@@ -26,7 +26,7 @@ export default class ContractInput extends React.Component {
             <div key={index} className="contract-execute-item">
                 <p className="contract-execute-left"><span>{inputItem.name}:{inputItem.type}</span></p>
                 <div className="contract-execute-right">
-                    <Input placeholder={inputItem.type} value={inputItem.params} onChange={this.handleParams.bind(this,inputs,index)}/>
+                    <Input disabled={this.props.disabled} placeholder={inputItem.type} value={inputItem.params} onChange={this.handleParams.bind(this,inputs,index)}/>
                 </div>
             </div>
         )):(<span></span>)

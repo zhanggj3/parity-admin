@@ -6,9 +6,11 @@ import PrivateAdd from '../AccountImportByPrivate';
 import {getStorage} from '../../utils/storage';
 import async from 'async';
 import {formatterTo0x} from '../../utils/0xExchange';
+import { injectIntl,FormattedMessage } from 'react-intl';
+import blockies from '../../utils/blockies';
 import './index.css';
 
-class Side extends Component {
+class AccountList extends Component {
     constructor() {
         super();
         this.state = {
@@ -69,6 +71,8 @@ class Side extends Component {
                 that.getAccounts().then((accounts)=>{
                     async.eachSeries(accounts,function(account,eachCallback){
                         that.getBalance(formatterTo0x(account.address)).then((data) =>{
+                            let source = blockies.create({ seed:formatterTo0x(account.address) ,size: 8,scale: 16}).toDataURL();
+                            account.img = source;
                             account.balance = data;
                             account.address = formatterTo0x(account.address);
                             accountData.push(account);
@@ -101,7 +105,7 @@ class Side extends Component {
     }
 
     render() {
-        const {accountAddState,accountList,loading,privateImportState,userIcon,defaultAddress,currentIcon} = this.state;
+        const {accountAddState,accountList,loading,privateImportState,defaultAddress,currentIcon} = this.state;
 
         let accountDialog = accountAddState === true?(
             <AccountAdd 
@@ -128,7 +132,7 @@ class Side extends Component {
         let accountArray = accountList && accountList.length>0? accountList.map((accountItem, index) => (
             <li key={index} onClick={this.goAccountInfo.bind(this,accountItem)} className={accountItem.address === defaultAddress?"active":null}>
                 {/* <Icon className="account-list-img" type="user" theme="outlined" /> */}
-                <img className="account-list-img" src={userIcon} alt=""/>
+                <img className="account-list-img" src={accountItem.img} alt=""/>
                 <div className="account-list-text">
                     <p className="account-list-name">{accountItem.name}</p>
                     <p>{accountItem.address}</p>
@@ -141,8 +145,8 @@ class Side extends Component {
         return (
             <div className="account-list">
                 <div className="account-main-head">
-                    <p onClick={this.createAccount.bind(this)}>创建账号</p>
-                    <p onClick={this.importAccount.bind(this)}>导入账号</p>
+                    <p onClick={this.createAccount.bind(this)}><FormattedMessage id="account-create" /></p>
+                    <p onClick={this.importAccount.bind(this)}><FormattedMessage id="account-import"/></p>
                 </div>
                 <ul className="account-main-ul">
                     <Spin spinning={loading}>{accountArray}</Spin>
@@ -154,4 +158,4 @@ class Side extends Component {
     }
 }
 
-export default Side;
+export default injectIntl(AccountList);

@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.0",
-    "@nervos/web3": "^0.17.41",
+    "@nervos/web3": "git+http://47.96.116.162:10080/kay/web3.git#develop",
     "@svgr/webpack": "2.4.1",
     "antd": "^3.10.3",
     "async": "^2.6.1",

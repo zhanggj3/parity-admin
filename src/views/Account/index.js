@@ -2,9 +2,17 @@ import React, { Component } from 'react';
 // import AccountOverview from '../AccountOverview';
 // import AccountOverviewSend from '../AccountOverviewSend';
 import {Link} from 'react-router-dom';
+import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
 import './index.css';
 
-class Home extends Component {
+const messages = defineMessages({
+	description: {
+	  id: 'account',
+	  defaultMessage: 'ACCOUNT',
+	}
+});
+
+class Account extends Component {
 	constructor(){
 		super();
 		this.state = {
@@ -12,12 +20,12 @@ class Home extends Component {
 			currentIndex:0,
 			list:[
 				{
-					label:"ACCOUNT",
+					label:this.props.intl.formatMessage(messages.description),
 					id:0,
 					path:'/account'
 				},
 				{
-					label:"SEND",
+					label:"SEND22222222",
 					id:1,
 					path:'/send'
 				}
@@ -76,4 +84,4 @@ class Home extends Component {
 	}
 }
 
-export default Home;
+export default injectIntl(Account);

@@ -1,0 +1,76 @@
+.management-accountList {
+    width:100%;
+    height:100%;
+    overflow-y: scroll;
+}
+.management-accountList-header {
+    width:100%;
+    padding:35px 40px 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.management-accountList-title {
+    font-size: 16px;
+    color:#4A4A4A;
+    line-height: 32px;
+    float: left;
+    font-weight: 200;
+}
+
+.management-accountList-search {
+    float: right;
+    width:280px;
+    position: relative;
+}
+
+.management-accountList-search input {
+    padding-left:30px;
+    padding-right: 30px;
+}
+
+.management-accountList-img {
+    position: absolute;
+    left:0;
+    top:0;
+    width:15px;
+    z-index: 99;
+    padding-top:9px;
+    margin-left: 7px;
+}
+
+.management-accountList-close {
+    position: absolute;
+    right:0;
+    top:0;
+    width:15px;
+    z-index: 99;
+    padding-top:9px;
+    margin-right: 7px;
+    cursor: pointer;
+}
+
+.management-accountList .ant-table-thead > tr > th {
+    background: #99A8C8!important;
+    color:#fff;
+}
+.management-accountList .ant-table-thead > tr, .ant-table-tbody > tr:nth-child(2n+2) {
+    background-color:#F0F0F0;
+}
+
+@media screen and (min-width: 0) and (max-width: 1000px) {
+    .management-accountList-header {
+        padding:15px 10px 0;
+    }
+    .management-accountList-title {
+        width: 100%;
+        margin-bottom: 10px;
+        font-size: 15px;
+    }
+    .management-accountList-search {
+        float: left;
+        width:200px;
+        margin-bottom: 20px;
+    }
+}
+

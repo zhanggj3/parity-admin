@@ -30,3 +30,19 @@
     color:#333!important;
     font-size: 15px!important;
 }
+
+@media screen and (min-width: 0) and (max-width: 1000px) {
+    .management-header {
+        padding:0;
+    }
+    .management-header>.ant-menu-horizontal > .ant-menu-item, .ant-menu-horizontal > .ant-menu-submenu {
+        margin-right: 0!important;
+        width:25%!important;
+        text-align: center!important;
+    }
+    .management-header>.ant-menu {
+        font-size: 13px!important;
+        padding:0 10px;
+        box-sizing: border-box;
+    }
+}

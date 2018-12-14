@@ -11,6 +11,13 @@ function getMnemonic() {
 
 exports.getMnemonic = getMnemonic;
 
+function checkMnemonic(params) {
+	return bip39.validateMnemonic(params);
+}
+
+exports.checkMnemonic = checkMnemonic;
+
+
 function getPrivateKeyFromMnemonic(mnemonic) {
 	const hdwallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic));
 	const wallet_hdpath = "m/44'/60'/0'/0/";

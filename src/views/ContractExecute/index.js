@@ -3,18 +3,23 @@ import {Button,Select,message} from 'antd';
 import {getStorage} from '../../utils/storage';
 import { createHashHistory } from 'history';
 import ContractExecuteInput from '../ContractExecuteInput';
+import ContractSend from '../ContractSend';
+import web3 from '../../utils/web3';
+import { injectIntl,FormattedMessage } from 'react-intl';
 import './index.css';
 const Option = Select.Option;
 
 
-class Home extends Component {
+class ContractExecute extends Component {
 	constructor(){
 		super();
 		this.state = {
             contract:'',
             functionList:[],
             selectedFunction:'',
-            selectedItem:[]
+            selectedItem:[],
+            sendShow:false,
+            code:''
 		}
     }
 
@@ -53,7 +58,6 @@ class Home extends Component {
     handleFunc(name){
         this.state.functionList.map((item,index)=>{
             if(item.name === name){
-                console.log(item);
                 this.setState({selectedItem:item});
             }
             return true;
@@ -61,8 +65,30 @@ class Home extends Component {
         this.setState({selectedFunction:name});
     }
 
+    nextSend() {
+        let params = [];
+        for(var i=0;i<this.state.selectedItem.inputs.length;i++){
+            let obj = this.state.selectedItem.inputs[i];
+            if(obj.params && obj.params !== '') {
+                params.push(obj.params);
+            }else{
+                message.warning(obj.name+" value is empty!");
+                return;
+            }
+        }
+        let contract = new web3.appchain.Contract(this.state.contract._jsonInterface,this.state.contract._address);
+        let byteCode = contract.methods[this.state.selectedItem.name].apply(null,params).encodeABI();
+        this.setState({code:byteCode},()=>{
+            this.setState({sendShow:true});
+        })
+    }
+
+    cancelSend() {
+        this.setState({sendShow:false});
+    }
+
 	render() {
-        const {selectedFunction,functionList,selectedItem} = this.state;
+        const {contract,selectedFunction,functionList,selectedItem,sendShow,code} = this.state;
 
         let functionSelect = functionList.length > 0 ? functionList.map((item, index) => (
             <Option key={index} value={item.name}>
@@ -73,13 +99,14 @@ class Home extends Component {
 		return (
 			<div className="contract-execute">
 				<div className="contract-header">
-                    <span>Contract Execute</span>
+                    <p><FormattedMessage id="contract-execute" /></p>
                 </div>
                 <div className="contract-execute-cont">
                     <div className="contract-execute-item">
-                        <p className="contract-execute-left">Function to execute:</p>
+                        <p className="contract-execute-left"><FormattedMessage id="contract-function" />:</p>
                         <div className="contract-execute-right">
                             <Select 
+                                disabled={sendShow}
                                 value={selectedFunction} 
                                 style={{width:"100%"}}
                                 placeholder="function to execute" 
@@ -88,30 +115,16 @@ class Home extends Component {
                             </Select>
                         </div>
                     </div>
-                    <ContractExecuteInput inputs={selectedItem.inputs}></ContractExecuteInput>
-                    
-                    {/* <div className="contract-execute-item">
-                        <p className="contract-execute-left">From(address):</p>
-                        <div className="contract-execute-right">
-                            <Input type="text" />
-                        </div>
-                    </div>
-                    <div className="contract-execute-item">
-                        <p className="contract-execute-left">To(address):</p>
-                        <div className="contract-execute-right">
-                            <Input type="text" />
-                        </div>
-                    </div>
-                    <div className="contract-execute-item">
-                        <p className="contract-execute-left">Tokens(uint256):</p>
-                        <div className="contract-execute-right">
-                            <Input type="text" />
-                        </div>
-                    </div> */}
+                    <ContractExecuteInput disabled={sendShow} inputs={selectedItem.inputs}></ContractExecuteInput>
                     <div className="contract-execute-bottom">
-                        <Button className="contract-execute-button" type="primary">Next</Button>
+                        <Button disabled={sendShow} onClick={this.nextSend.bind(this)} className="contract-execute-button" type="primary"><FormattedMessage id="next" /></Button>
+                        <Button onClick={this.cancelSend.bind(this)} className="contract-execute-cancelbutton"><FormattedMessage id="cancel" /></Button>
+                    </div>
+                    <div style={{display: (sendShow===true) ? "block" : "none"}}>
+                        <ContractSend code={code} contractAddress={contract._address}></ContractSend>
                     </div>
                 </div>
+                
 				
 			</div>
 			
@@ -119,4 +132,4 @@ class Home extends Component {
 	}
 }
 
-export default Home;
+export default injectIntl(ContractExecute);

@@ -1,20 +1,22 @@
 import React, { Component } from 'react'
-import {Button} from 'antd';
+import {Button,Spin} from 'antd';
 import ContractWatch from '../../views/ContractWatch';
 import { createHashHistory } from 'history';
 import web3 from '../../utils/web3';
 import {getStorage, setStorage} from '../../utils/storage';
 import {formatAmount} from '../../utils/0xExchange';
 import async from 'async';
+import { injectIntl,FormattedMessage } from 'react-intl';
 import './index.css';
 
-class Home extends Component {
+class Contract extends Component {
 	constructor(){
 		super();
 		this.state = {
             userIcon:require("../../image/insee-icon.png"),
             watchState:false,
-            contractsList:''
+            contractsList:'',
+            loading:true
 		}
     }
 
@@ -28,7 +30,6 @@ class Home extends Component {
             function(callback){
                 let accountData = [];
                 that.getContractList().then((accounts)=>{
-                    console.log(accounts);
                     async.eachSeries(accounts,function(account,eachCallback){
                         that.getBalance(account._address).then((data) =>{
                             account.balance = data;
@@ -41,7 +42,6 @@ class Home extends Component {
                 })
             }],function(err,accountData){
             if(!err){
-                console.log(accountData);
                 that.setState({contractsList:accountData});
             }
         })
@@ -57,7 +57,7 @@ class Home extends Component {
             }else{
                 contracts = [];
             }
-            that.setState({contracts:contracts});
+            that.setState({contracts:contracts,loading:false});
             resolve(contracts)
         });  
     }
@@ -87,16 +87,16 @@ class Home extends Component {
     }
 
 	render() {
-        const {userIcon,watchState,contractsList} = this.state;
+        const {userIcon,watchState,contractsList,loading} = this.state;
+
+        let noData;
+        if(loading && loading === true){
+            noData = '';
+        }else{
+            noData = 'There are currently no contracts to display';
+        }
 
         let contractArray = contractsList.length? contractsList.map((contractItem, index) => (
-            // <li key={index} onClick={this.contractInfo.bind(this,contractItem)}>
-            //     <div className="accounts-u-a">
-            //         <Icon type="smile" theme="outlined" className="accounts-userImg"/>
-            //         <p className="accounts-address">{contractItem.address}</p>
-            //     </div>
-            //     <p className="accounts-balance"><Icon type="compass" />&nbsp;&nbsp;{formatAmount(contractItem.balance)}</p>
-            // </li>
             <li key={index} onClick={this.watchInfo.bind(this,contractItem)}>
                 <img className="watch-list-user" src={userIcon} alt=""/>
                 <div className="watch-list-text">
@@ -105,7 +105,8 @@ class Home extends Component {
                     <p className="watch-list-address">{contractItem._address}</p>
                 </div>
             </li>
-        )): 'There are currently no contracts to display';
+        )): (<p>{noData}</p>);
+        
 
         let watchDialog = watchState === true?(
             <ContractWatch 
@@ -118,18 +119,19 @@ class Home extends Component {
 		return (
 			<div className="contract">
                 <div className="contract-header">
-                    <span>Contract</span>
+                    <p><FormattedMessage id="contract-home" /></p>
                 </div>
                 <div className="contract-deploy">
-                    <Button type="primary" onClick={this.showDeploy.bind(this)} className="contract-deploy-button">Deploy</Button>
+                    <Button type="primary" onClick={this.showDeploy.bind(this)} className="contract-deploy-button"><FormattedMessage id="deploy" /></Button>
                 </div>
                 <div className="contract-watch">
-                    <p className="contract-watch-title">CUSTOM CONTRACTS</p>
+                    <p className="contract-watch-title"><FormattedMessage id="custom-contract" /></p>
                     <p className="contract-watch-tips">To watch and interact with a contract already deployed on the blockchain, you need to know its address and the description of its interface in JSON format</p>
                     <ul className="contract-watch-list">
-                       {contractArray}
+                       {/* {contractArray} */}
+                       <Spin spinning={loading}>{contractArray}</Spin>
                     </ul>
-                    <Button type="primary" onClick={this.showWatch.bind(this)} className="contract-watch-button">Watch</Button>
+                    <Button type="primary" onClick={this.showWatch.bind(this)} className="contract-watch-button"><FormattedMessage id="watch" /></Button>
                 </div>
                 {watchDialog}
 			</div>
@@ -138,4 +140,4 @@ class Home extends Component {
 	}
 }
 
-export default Home;
+export default injectIntl(Contract);

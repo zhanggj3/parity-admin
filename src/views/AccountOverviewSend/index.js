@@ -5,16 +5,19 @@ import SendTransfer from '../AccountTransfer';
 import { createHashHistory } from 'history';
 import queryString from  'query-string' 
 import {formatterTo0x,formatAmount} from '../../utils/0xExchange';
+import Process from '../../component/Process';
 import { Input,Select,Checkbox,message } from 'antd';
+import { injectIntl,FormattedMessage } from 'react-intl';
+
 
 import './index.css';
 
 const Option = Select.Option;
 const { TextArea } = Input;
 
-class Home extends Component {
-	constructor(){
-		super();
+class AccountOverviewSend extends Component {
+	constructor(props){
+		super(props);
 		this.state = {
 			accountList:[],
 			from:'',
@@ -25,16 +28,18 @@ class Home extends Component {
 			sendData:'',
 			sendState:false,
 			gas:21000,
+			defaultGas:21000,
 			gasPrice:21000,
 			checkState:false,
+			optionState:false,
 			list:[
 				{
-					label:"ACCOUNT",
+					label:this.props.intl.formatMessage({id:"account-home"}),
 					id:0,
 					path:'/'
 				},
 				{
-					label:"SEND",
+					label:this.props.intl.formatMessage({id:"account-send"}),
 					id:1,
 					path:'/send'
 				}
@@ -42,12 +47,12 @@ class Home extends Component {
 		}
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		let query=this.query=queryString.parse(this.props.location.search);
-		console.log(query);
 		this.getAccountData();
+		this.getGasPrice();
+		// this.estimateGas(this.state.toAddress,this.state.sendData);
 		let defaultAccount = getStorage("defaultAccount");
-		
 		if(query.from && query.from !== ''){
 			this.setState({from:query.from});
 		}else{
@@ -58,9 +63,27 @@ class Home extends Component {
 		}
 		if(query.to && query.to !== ''){
 			this.setState({toAddress:query.to});
+			this.estimateGas(query.to,this.state.sendData);
 		} 
 		
 		
+	}
+
+	estimateGas(to,data) {
+		web3.appchain.estimateGas({
+			to:to,
+			data:data
+		}).then((data)=>{
+			// let gas = web3.utils.hexToNumber(data);
+			this.setState({defaultGas:data});
+		})
+	}
+
+	getGasPrice(){
+		web3.appchain.getGasPrice().then((data)=>{
+			let gasPrice = web3.utils.hexToNumber(data);
+			this.setState({gasPrice:gasPrice});
+		})
 	}
 
 	handleAmount(event){
@@ -69,13 +92,16 @@ class Home extends Component {
 
 	handleData(event){
 		this.setState({sendData:event.target.value});
+		if(this.state.toAddress && this.state.toAddress !== ''){
+			this.estimateGas(this.state.toAddress,event.target.value);
+		}
 	}
 
 	handleChange(value) {
 		this.setState({from:value});
 		if(this.state.checkState && this.state.checkState === true){
 			this.getBalance(value).then((data)=>{
-				this.setState({amount:Number(formatAmount(data))});
+				this.setState({amount:formatAmount(web3.utils.toBN(data).sub(web3.utils.toBN(this.state.gas*this.state.gasPrice)).toString(10))});
 			})
 		}else{
 			this.setState({amount:0});
@@ -83,16 +109,15 @@ class Home extends Component {
 	}
 
 	recipientAddress(value){
-		console.log(value);
 		this.setState({toAddress:value});
+		this.estimateGas(value,this.state.sendData);
 	}
 
 	onChange(e) {
-		// console.log(`checked = ${e.target.checked}`);
 		this.setState({checkState:e.target.checked});
 		if(e.target.checked && e.target.checked === true){
 			this.getBalance(this.state.from).then((data)=>{
-				this.setState({amount:Number(formatAmount(data))});
+				this.setState({amount:formatAmount(web3.utils.toBN(data).sub(web3.utils.toBN(this.state.gas*this.state.gasPrice)).toString(10))});
 			})
 		}else{
 			this.setState({amount:0});
@@ -138,10 +163,10 @@ class Home extends Component {
 		// 	return;
 		// }
 
-		if(!this.state.amount || this.state.amount ===''){
-			message.warning("The transaction Amount should not empty!");
-			return;
-		}
+		// if(!this.state.amount || this.state.amount ===''){
+		// 	message.warning("The transaction Amount should not empty!");
+		// 	return;
+		// }
 		
 		if(!this.state.gas || this.state.gas ===''){
 			message.warning("The transaction gas should not empty!");
@@ -158,12 +183,25 @@ class Home extends Component {
 		this.setState({sendState:false});
 	}
 
+	showOptions() {
+		this.setState({optionState:!this.state.optionState});
+	}
+
 	tabExchange(item){
-		createHashHistory().push(item.path);
+		createHashHistory().replace(item.path);
+	}
+
+	getGas(value){
+		this.setState({gas:value});
+		if(this.state.checkState && this.state.checkState === true){
+			this.getBalance(this.state.from).then((data)=>{
+				this.setState({amount:formatAmount(web3.utils.toBN(data).sub(web3.utils.toBN(value*this.state.gasPrice)).toString(10))});
+			})
+		}
 	}
 
 	render() {
-		const {accountList,from,toAddress,amount,sendData,sendState,list,gas,gasPrice,checkState} = this.state;
+		const {accountList,from,toAddress,amount,sendData,sendState,defaultGas,list,gas,gasPrice,checkState,optionState } = this.state;
 		let fromAddress = accountList && accountList.length>0? accountList.map((accountItem, index) => (
             <Option key={index} value={formatterTo0x(accountItem.address)}>{accountItem.name}</Option>
 		)):'';
@@ -198,7 +236,7 @@ class Home extends Component {
 					<div className="account-overviewsend">
 						<div className="account-overviewsend-cont">
 							<div className="overviewsend-center">
-								<p className="overviewsend-left">From:</p>
+								<p className="overviewsend-left"><FormattedMessage id="from" />:</p>
 								<div className="overviewsend-right">
 									<Select className="overviewsend-right" value={from} style={{ width: "200px" }} onChange={this.handleChange.bind(this)}>
 										{fromAddress}
@@ -207,7 +245,7 @@ class Home extends Component {
 								
 							</div>
 							<div className="overviewsend-center">
-								<p className="overviewsend-left">To:</p>
+								<p className="overviewsend-left"><FormattedMessage id="to" />:</p>
 								<div className="overviewsend-right">
 									<Select 
 										value={toAddress} 
@@ -223,14 +261,14 @@ class Home extends Component {
 								
 							</div>
 							<div className="overviewsend-center">
-								<p className="overviewsend-left">Amount:</p>
+								<p className="overviewsend-left"><FormattedMessage id="amount" />:</p>
 								<div className="overviewsend-right">
 									<Input disabled={checkState} placeholder="Amount Input" onChange={this.handleAmount.bind(this)} value={amount} />
 									<div className="overviewsend-tips">
-										<Checkbox className="overviewsend-checkbox" onChange={this.onChange.bind(this)} value={checkState}>Send Everything / You want to send <span style={{color:"#50D4E3"}}>{amount} SEE</span></Checkbox>
+										<Checkbox className="overviewsend-checkbox" onChange={this.onChange.bind(this)} value={checkState}>Send Everything / You want to send <span style={{color:"#6753FF"}}>{amount} SEE</span></Checkbox>
 									</div>
-									<span className="overviewsend-options">Show Fewer Optins</span>
-									<div className="overviewsend-textarea">
+									<span className="overviewsend-options" onClick={this.showOptions.bind(this)}><FormattedMessage id="showOptions" /></span>
+									<div className="overviewsend-textarea" style={{display:optionState === true ? "block":"none"}}>
 										<TextArea value={sendData} rows={4} onChange={this.handleData.bind(this)} placeholder='Data' />
 									</div>
 									
@@ -239,11 +277,12 @@ class Home extends Component {
 							</div>
 
 							<div className="overviewsend-center">
-								<p className="overviewsend-left">Gas Fee:</p>
+								<p className="overviewsend-left"><FormattedMessage id="gasFee" />:</p>
 								<div className="overviewsend-right">
-									<p className="overviewsend-gasfee">{gas*gasPrice} SEE</p>
-									<p className="overviewsend-calculate">≈ Gas({gas})*Gas Price ({gasPrice} SEG)</p>
-									<p className="overviewsend-next" onClick={this.next.bind(this)}>Next</p>
+									<p className="overviewsend-gasfee">{formatAmount(gas*gasPrice)} SEE</p>
+									<p className="overviewsend-calculate">≈ SEG limit({gas})*SEG Price ({gasPrice} SEG)</p>
+									<Process defaultGas={defaultGas} getGas={this.getGas.bind(this)} ></Process>
+									<p className="overviewsend-next" onClick={this.next.bind(this)}><FormattedMessage id="next" /></p>
 								</div>
 							</div>
 						</div>
@@ -257,4 +296,4 @@ class Home extends Component {
 	}
 }
 
-export default Home;
+export default injectIntl(AccountOverviewSend);

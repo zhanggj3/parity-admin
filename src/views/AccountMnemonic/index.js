@@ -4,9 +4,10 @@ import { createAccount } from '../../utils/api';
 import { pushStorage } from '../../utils/storage';
 import pkutils from '../../utils/keyMnemonic';
 import './index.css';
+import { injectIntl,FormattedMessage } from 'react-intl';
 // const keythereum = require("keythereum");
 
-export default class Addaccount extends React.Component {
+class AccountMnemonic extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -74,13 +75,13 @@ export default class Addaccount extends React.Component {
     render() {
         const { mnemonicPhrase, mnemonicPhraseCheck,loading } = this.state;
         let warnigTips = (mnemonicPhrase === mnemonicPhraseCheck) ?
-            (<span></span>) : (<span className="warning-tips">*The account recovery phrase does not match</span>);
+            (<span></span>) : (<span className="warning-tips">*<FormattedMessage id="mnemonic-match" /></span>);
         
         const container = (
             <div className="mnemonic-confirm">
                 <div className="mnemonic-input">
                     <div>
-                        <p style={{ paddingBottom: "10px", fontSize: "20px" }}>owner recovery phrase：</p>
+                        <p style={{ paddingBottom: "10px", fontSize: "20px" }}><FormattedMessage id="mnemonic-recovery" />：</p>
                         <p style={{ paddingBottom: "10px" }}>{mnemonicPhrase}</p>
                         <Input placeholder="The account recovery phrase" onChange={this.checkMnemonic.bind(this)} value={mnemonicPhraseCheck} />
                         <p style={{ paddingTop: "10px" }} >{warnigTips}</p>
@@ -91,7 +92,7 @@ export default class Addaccount extends React.Component {
         return (
             <div className="account-mnemonic">
                 <Modal
-                    title="WRITE MNEMONIC"
+                    title={this.props.intl.formatMessage({id:"account-mnemonic"})}
                     visible={this.props.mnemonicState}
                     onOk={this.handleOk.bind(this)}
                     onCancel={this.handleCancel.bind(this)}
@@ -105,3 +106,5 @@ export default class Addaccount extends React.Component {
         );
     };
 }
+
+export default injectIntl(AccountMnemonic);

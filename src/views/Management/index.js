@@ -1,29 +1,51 @@
 import React, { Component } from 'react'
-import { Menu } from 'antd';
+import { Menu,Icon } from 'antd';
 import {Route,Link} from 'react-router-dom';
 import ManageNodelist from '../ManagementNodelist';
 import ManageNodeadd from '../ManagementNodeadd';
+import ManageAccountList from '../ManagementAccountList';
+import ManagePermissin from '../ManagementPermission';
+import ManageRole from '../ManagementRoles';
+import ManagementNodeAdd from '../ManagementNodeadd';
+import ManageApi from '../ManagementApi';
+import { injectIntl } from 'react-intl';
 import './index.css';
 const SubMenu = Menu.SubMenu;
 
 
-class Home extends Component {
+class Management extends Component {
 	constructor(){
 		super();
 		this.state = {
-            current: 'node-list'
+            current: '',
+            nodeAddState:false
 		}
     }
 
     handleClick(e) {
-        console.log('click ', e);
         this.setState({
           current: e.key,
         });
     }
 
+    closeNodeAdd() {
+        this.setState({nodeAddState:false});
+    }
+
+    showNodeAdd() {
+        this.setState({nodeAddState:true});
+    }
+
 	render() {
-		
+        const {nodeAddState} = this.state;
+        const nodeAdd = nodeAddState === true ? (
+            <ManagementNodeAdd
+                state={nodeAddState}
+                closeWatch={this.closeNodeAdd.bind(this)}
+                >
+            </ManagementNodeAdd>
+        ):''
+
 		return (
 			<div className="management">
                 <div className="management-header">
@@ -33,31 +55,36 @@ class Home extends Component {
                         mode="horizontal"
                         style={{width:"100%",height:"40px",lineHeight:"38px",backgroundColor:"#f4f4f4"}}
                     >
-                        <SubMenu key="node" title={<span className="submenu-title-wrapper">节点管理</span>}>
-                            <Menu.Item key="node-list"><Link to={'/management/nodelist'}>节点列表</Link></Menu.Item>
-                            <Menu.Item key="node-add"><Link to={'/management/nodeadd'}>增加节点</Link></Menu.Item>
+                        <SubMenu key="node" title={<span className="submenu-title-wrapper">{this.props.intl.formatMessage({id:"node-management"})}<Icon type="caret-down" style={{color:"#1890ff",marginRight:"0"}} /></span>}>
+                            <Menu.Item key="node-list"><Link to={'/management'} replace>{this.props.intl.formatMessage({id:"node-list"})}</Link></Menu.Item>
+                            <Menu.Item key="node-add" onClick={this.showNodeAdd.bind(this)}>{this.props.intl.formatMessage({id:"node-add"})}</Menu.Item>
                         </SubMenu>
                         <Menu.Item key="interface">
-                            接口管理
+                            <Link to={'/management/api'} replace>{this.props.intl.formatMessage({id:"interface-management"})}</Link>
                         </Menu.Item>
-                        <SubMenu key="permission" title={<span className="submenu-title-wrapper">权限管理</span>}>
-                            <Menu.Item key="user-permission">用户管理</Menu.Item>
-                            <Menu.Item key="manage-permission">权限管理</Menu.Item>
+                        <SubMenu key="permission" title={<span className="submenu-title-wrapper">{this.props.intl.formatMessage({id:"permission-management"})}<Icon type="caret-down" style={{color:"#1890ff",marginRight:"0"}} /></span>}>
+                            <Menu.Item key="user-permission"><Link to={'/management/accountlist'} replace>{this.props.intl.formatMessage({id:"user-management"})}</Link></Menu.Item>
+                            <Menu.Item key="manage-permission"><Link to={'/management/permission'} replace>{this.props.intl.formatMessage({id:"permission-management"})}</Link></Menu.Item>
                         </SubMenu>
                         <Menu.Item key="role">
-                            角色管理
+                            <Link to={'/management/role'} replace>{this.props.intl.formatMessage({id:"role-management"})}</Link>
                         </Menu.Item>
                     </Menu>
                 </div>
                 <div className="management-main">
                     {this.props.children}
-                    <Route path={'/management/nodelist'} component={ManageNodelist} />
+                    <Route exact path={'/management'} component={ManageNodelist} />
                     <Route path={'/management/nodeadd'} component={ManageNodeadd} />
+                    <Route path={'/management/accountlist'} component={ManageAccountList} />
+                    <Route path={'/management/permission'} component={ManagePermissin} />
+                    <Route path={'/management/role'} component={ManageRole} />
+                    <Route path={'/management/api'} component={ManageApi} />
                 </div>
+                {nodeAdd}
 			</div>
 			
 		);
 	}
 }
 
-export default Home;
+export default injectIntl(Management);

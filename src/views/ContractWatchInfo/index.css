@@ -129,6 +129,7 @@
     padding:0 10px;
     box-sizing: border-box;
     border:1px solid #F0F0F0;
+    word-wrap: break-word;
 }
 
 .watchinfo-dynamic-question {
@@ -168,7 +169,6 @@
     text-align: left;
     padding-left:120px;
     box-sizing: border-box;
-    margin-top: 20px;
 }
 
 @media screen and (min-width: 0) and (max-width: 1000px) {

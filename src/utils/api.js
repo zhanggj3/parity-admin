@@ -1,5 +1,5 @@
 import web3 from './web3';
-// import async from 'async';
+import async from 'async';
 const keythereum = require("keythereum");
 // const sign = require('ethjs-signer').sign;
 
@@ -48,52 +48,44 @@ export function getPrivateKey (data) {
     });   
 }
 
-export function getLatestTransactionData(count,limit,address){
+export function getLatestTransactionData(count){
     return new Promise((resolve, reject) => {
-        // let txs = [];
-        // async.waterfall([
-        //     function(callback){
-                // let accountData = [];
-                
-                web3.appchain.getBlockNumber().then((number)=>{
-                    console.log(number);
-                    console.log(address);
-                    console.log(number-count+1);
-
-                    web3.appchain.getLogs({
-                        address: address,
-                        fromBlock:"latest",
-                        toBlock:"latest"
-                    }).then((res)=>{
-                        console.log(res);
-                        resolve(res);
+        async.waterfall([
+            function(callback){
+                let txs = [];
+                web3.appchain.getBlockNumber().then((data)=>{
+                    let blockCount = count;
+                    if(data - blockCount < 0){
+                        blockCount = data + 1;
+                    }
+                    let list = [];
+                    for(let i=0;i<blockCount;i++){
+                        list.push(i);
+                    }
+                    async.eachSeries(list,function(j,eachSecondCallback){
+                        web3.appchain.getBlock(data-j).then((block)=>{
+                            let transactions = block.body.transactions;
+                            let txInfo;
+                            async.eachSeries(transactions,function(item,eachCallback){
+                                web3.appchain.getTransaction(item).then((transactionData)=>{
+                                    txInfo = web3.appchain.unsigner(transactionData.content);
+                                    txInfo.hash = item;
+                                    txInfo.key = item;
+                                    txs.push(txInfo);
+                                    eachCallback();
+                                })
+                            },function(err){
+                                eachSecondCallback();
+                            })
+                        })
+                    },function(err){
+                        callback(err,txs);
                     })
-                    // for(let i=0;i<blockCount;i++){
-                    //     web3.appchain.getBlock(data-i).then((block)=>{
-                    //         console.log(block);
-                    //         let transactions = block.body.transactions;
-                    //         let txInfo;
-                    //         async.eachSeries(transactions,function(item,eachCallback){
-                    //             web3.appchain.getTransaction(item).then((transactionData)=>{
-                    //                 txInfo = web3.appchain.unsigner(transactionData.content);
-                    //                 txInfo.hash = item;
-                    //                 txInfo.key = item;
-                    //                 if(txs.length<limit){
-                    //                     txs.push(txInfo);
-                    //                 }
-                    //                 eachCallback();
-                    //             })
-                    //         })
-                    //     })
-                    // }
-                    // callback(null,txs);
-            //     })
-            // },function(txs,callsecondback){
-            //     callsecondback(null,txs)
-            // }],function(err,result){
-            // if(!err){
-            //     resolve(result);
-            // }
+                })
+            }],function(err,result){
+            if(!err){
+                resolve(result);
+            }
         })
     })
 }

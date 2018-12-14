@@ -12,25 +12,27 @@ export function formatAmount(amount) {
     if(amount && amount !== ''){
         let ethAmount;
         if(typeof(amount) == "number"){
-            ethAmount = web3.utils.fromWei(amount,'ether').toFixed(3);
+            amount = amount.toString();
+            ethAmount = web3.utils.fromWei(amount,'ether');
         }else{
-            ethAmount = Number(web3.utils.fromWei(amount,'ether')).toFixed(3);
+            ethAmount = web3.utils.fromWei(amount,'ether');
         }
         return  ethAmount
     }
     
 }
 export function formatAmountTo(amount) {
-    console.log(amount)
+    if(amount === 0 || amount === '0'){
+        return 0;
+    }
     if(amount && amount !== ''){
         let ethAmount;
         
         if(typeof(amount) == "number"){
             amount = amount.toString();
-            console.log(typeof(amount));
-            ethAmount = Number(web3.utils.toWei(amount,'ether'));
+            ethAmount = web3.utils.toWei(amount,'ether');
         }else{
-            ethAmount = Number(web3.utils.toWei(amount,'ether'));
+            ethAmount = web3.utils.toWei(amount,'ether');
         }
         return  ethAmount
     }
@@ -49,4 +51,17 @@ export function bigNumber(amount) {
     var ret = new BigNumber(data.toString());
 
     return ret.dividedBy(Ether).toFixed(3) + " SEE";
+}
+
+export function BufferString(amount) {
+    let byte16 = '';
+    for(let i=0;i<amount.length;i++){
+        let data =  amount[i].toString(16);
+        if(data.length === 1){
+            data = "0"+data;
+        }
+        byte16 += data;
+    }
+
+    return byte16;
 }

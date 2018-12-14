@@ -21,12 +21,9 @@
 
 @media screen and (min-width: 0) and (max-width: 1000px) {
     .account-overviewsend-cont {
-        padding: 20px 10px 40px 10px;
+        padding: 20px 0 40px 0;
     }
-    .overviewsend-right {
-        float: left;
-        width: calc(100% - 70px);
-    }
+
     .contract-deploy-options {
         margin: 10px 0 10px;
     }

@@ -4,11 +4,13 @@ import {createAccountByPrivate,getPrivateKey} from '../../utils/api';
 import {replaceStorage} from '../../utils/storage';
 // import {formatterFrom0x} from '../../utils/0xExchange';
 import {getPrivateKeyFromMnemonic} from '../../utils/keyMnemonic';
+import { injectIntl,FormattedMessage } from 'react-intl';
+import {checkMnemonic} from '../../utils/keyMnemonic';
 // import TextArea from 'antd/lib/input/TextArea';
 const Option = Select.Option;
 const { TextArea } = Input;
 
-export default class Addaccount extends React.Component {
+class AccountImport extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -64,6 +66,12 @@ export default class Addaccount extends React.Component {
             if(!that.state.memoriziWord || that.state.memoriziWord === ''){
                 message.warning('WRITE YOUR MEMORIZING WORDS!');
                 return;
+            }else {
+                let state = checkMnemonic(that.state.memoriziWord);
+                if(!state || state === false){
+                    message.warning('MEMORIZING WORDS IS NOT VALIDATE!');
+                    return;
+                }
             }
             this.setState({loading:true});
             this.setState({timerID:setInterval(() => this.importAccount(),1000)});
@@ -91,7 +99,6 @@ export default class Addaccount extends React.Component {
             keyStore:JSON.parse(this.state.keystore)
         }
         getPrivateKey(data).then((res)=>{
-            console.log(res);
             createAccountByPrivate(that.state.password,res).then(function(res){
                 message.success('IMPORT ACCOUNT SUCCESS!');
                 res.name=that.state.name;
@@ -160,21 +167,21 @@ export default class Addaccount extends React.Component {
 	render() {
         const {password,checkPassword,loading,name,type,memoriziWord,keystore,showState} = this.state;
         let warnigTips = (password === checkPassword) ? 
-        (<span></span>):(<span className="warning-tips">*the supplied passwords does not match</span>);
+        (<span></span>):(<span className="warning-tips">*<FormattedMessage id="password-match" /></span>);
 
         const container = (
             <div className="account-add-input">
                 <div className="account-add-cont">
-                    <p className="account-add-left">type:</p>
+                    <p className="account-add-left"><FormattedMessage id="import-type" />:</p>
                     <div className="account-add-right">
                         <Select value={type} style={{width:"100%"}} onChange={this.handleType.bind(this)}>
-                            <Option value="1">Memorizing words</Option>
-                            <Option value="2">Keystore</Option>
+                            <Option value="1"><FormattedMessage id="mnemonic-word" /></Option>
+                            <Option value="2"><FormattedMessage id="import-keystore" /></Option>
                         </Select>                   
                     </div>
                 </div>
                 <div className="account-add-cont">
-                    <p className="account-add-left">name:</p>
+                    <p className="account-add-left"><FormattedMessage id="account-name" />:</p>
                     <div className="account-add-right">
                         <Input placeholder="account name" onChange={this.handleName.bind(this)} value={name}/>
                     </div>
@@ -186,32 +193,32 @@ export default class Addaccount extends React.Component {
                     </div>
                 </div> */}
                 <div style={{display: (type==="1") ? "block" : "none"}} className="account-add-cont">
-                    <p className="account-add-left">words:</p>
+                    <p className="account-add-left"><FormattedMessage id="import-mnemonic" />:</p>
                     <div className="account-add-right">
                         <TextArea placeholder="Memorizing words" row={2} onChange={this.handleMemorizeWord.bind(this)} value={memoriziWord}/>
                     </div>
                 </div>
                 <div style={{display: (type==="2") ? "block" : "none"}} className="account-add-cont">
-                    <p className="account-add-left">keystore:</p>
+                    <p className="account-add-left"><FormattedMessage id="import-keystore" />:</p>
                     <div className="account-add-right">
                         <input type="file" ref="my_file" style={{display: "none"}} onChange={this.handleFile.bind(this)} />
                         <TextArea placeholder="Keystore" rows={4} disabled value={keystore}/>
-                        <Button type="primary" style={{marginTop:"5px"}} onClick={this.myfile.bind(this)}>Import Keystore</Button>
+                        <Button type="primary" style={{marginTop:"5px"}} onClick={this.myfile.bind(this)}><FormattedMessage id="import-keystore-button" /></Button>
                     </div>
                 </div>
                 <div className="account-add-cont">
-                    <p className="account-add-left">password:</p>
+                    <p className="account-add-left"><FormattedMessage id="account-password" />:</p>
                     <div className="account-add-right">
                         <Input style={{display: (showState===true) ? "block" : "none"}} placeholder="password" type="text" onChange={this.handlePass.bind(this)} value={password}/>
                         <Input style={{display: (showState===false) ? "block" : "none"}} placeholder="password" type="password" onChange={this.handlePass.bind(this)} value={password}/>
                     </div>
                 </div>
                 <div className="account-add-cont">
-                    <p className="account-add-left">repeat:</p>
+                    <p className="account-add-left"><FormattedMessage id="password-repeat" />:</p>
                     <div className="account-add-right">
                         <Input style={{display: (showState===true) ? "block" : "none"}} placeholder="password repeat" type="text" onChange={this.handleCheckPass.bind(this)} value={checkPassword}/>
                         <Input style={{display: (showState===false) ? "block" : "none"}} placeholder="password repeat" type="password" onChange={this.handleCheckPass.bind(this)} value={checkPassword}/>
-                        <Checkbox className="overviewsend-checkbox" onChange={this.handleShow.bind(this)}>Show Password</Checkbox>
+                        <Checkbox className="overviewsend-checkbox" onChange={this.handleShow.bind(this)}><FormattedMessage id="password-show" /></Checkbox>
                         {warnigTips}
                     </div>
                 </div>
@@ -234,3 +241,5 @@ export default class Addaccount extends React.Component {
 		);
 	};
 }
+
+export default injectIntl(AccountImport);
